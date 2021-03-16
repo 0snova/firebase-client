@@ -11,7 +11,7 @@ export type FirebaseEmulatorOptions = {
 const EMULATOR_FIRESTORE_HOST_DEFAULT = 'localhost:8080';
 const EMULATOR_AUTHENTICATION_HOST_DEFAULT = 'http://localhost:9099';
 
-const shouldUseEmulatorDefault = () => {
+export const shouldUseEmulatorWhenLocalhost = (): boolean => {
   /* TODO: Determine a more robust and common approach to detect if emulator is used  
     (maybe use environment variable)
   */
@@ -25,8 +25,10 @@ const shouldUseEmulatorDefault = () => {
   return window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
 };
 
+const shouldNeverUseEmulator = () => false;
+
 export function maybeUseEmulator(firebase: FirebaseApp, options: FirebaseEmulatorOptions): void {
-  const shouldUseEmulator = options.shouldUseEmulator ?? shouldUseEmulatorDefault;
+  const shouldUseEmulator = options.shouldUseEmulator ?? shouldNeverUseEmulator;
 
   if (shouldUseEmulator()) {
     console.log('Using Firebase Services Emulators.');
