@@ -12,7 +12,7 @@ function makePackageJSON(originalPackageJSONContent) {
     }
 
     if (name === 'files') {
-      resultPkg[name] = '*';
+      resultPkg[name] = ['*'];
     } else if (name === 'main' || name === 'module' || name === 'browser' || name === 'types') {
       resultPkg[name] = value.replace('dist/', '');
     } else {
