@@ -18,7 +18,7 @@ export default [
     input: 'src/index.ts',
     external,
     output: [
-      { file: pkg.main, format: 'cjs', inlineDynamicImports: true, exports: 'default' },
+      { file: pkg.main, format: 'cjs', inlineDynamicImports: true, exports: 'auto' },
       { file: pkg.module, format: 'es', inlineDynamicImports: true },
     ],
     plugins: [resolve({ extensions }), typescript()],
