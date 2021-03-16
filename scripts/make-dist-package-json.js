@@ -24,7 +24,9 @@ function makePackageJSON(originalPackageJSONContent) {
 }
 
 function savePackageJSON(content) {
-  fs.writeFileSync(path.resolve(__dirname, '../dist/package.json'), JSON.stringify(content), { encoding: 'utf-8' });
+  fs.writeFileSync(path.resolve(__dirname, '../dist/package.json'), JSON.stringify(content, undefined, 2), {
+    encoding: 'utf-8',
+  });
 }
 
 savePackageJSON(makePackageJSON(require('../package.json')));
