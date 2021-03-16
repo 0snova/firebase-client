@@ -14,12 +14,14 @@ export interface FirebaseAppOptions {
   emulator?: FirebaseEmulatorOptions;
 }
 
+export type FirebaseAppOptionsWithDefaultValues = Required<FirebaseAppOptions>;
+
 export type FirebaseApp = firebase.app.App;
 export type Firebase = typeof firebase;
 
 export function startFirebase(
   config: FirebaseConfig,
-  { name = 'default', use: { analytics = true } = {}, emulator = {} }: FirebaseAppOptions = {}
+  { name, use: { analytics }, emulator }: FirebaseAppOptionsWithDefaultValues
 ): FirebaseApp {
   // Check if app with provided name already exists. It is usefull for development environments with HMR
   // to avoid Firebase errors about already initialized app.
