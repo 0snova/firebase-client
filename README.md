@@ -13,9 +13,9 @@ It is never (or almost never) a good idea to load Firebase Web SDK synchronously
 
 ```sh
 # npm
-npm install @osnova/firebase-client --save
+npm install @osnova/firebase-client firebase --save
 # yarn
-yarn add @osnova/firebase-client
+yarn add @osnova/firebase-client firebase
 ```
 
 ## Usage
