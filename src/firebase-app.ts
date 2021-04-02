@@ -10,6 +10,7 @@ export interface FirebaseAppOptions {
     analytics?: boolean;
     firestore?: boolean;
     auth?: boolean;
+    functions?: boolean;
   };
   emulator?: FirebaseEmulatorOptions;
 }

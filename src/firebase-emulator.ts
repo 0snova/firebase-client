@@ -6,10 +6,15 @@ export type FirebaseEmulatorOptions = {
   firestoreHost?: string | false;
   /* false - do not use Authentication Emulator even if shouldUseEmulator() is true */
   authHost?: string | false;
+  /* false - do not use Functions Emulator even if shouldUseEmulator() is true */
+  functionsHost?: string | false;
+  functionsPort?: number;
 };
 
 const EMULATOR_FIRESTORE_HOST_DEFAULT = 'localhost:8080';
 const EMULATOR_AUTHENTICATION_HOST_DEFAULT = 'http://localhost:9099';
+const EMULATOR_FUNCTIONS_HOST_DEFAULT = 'localhost';
+const EMULATOR_FUNCTIONS_PORT_DEFAULT = 5001;
 
 export const shouldUseEmulatorWhenLocalhost = (): boolean => {
   /* TODO: Determine a more robust and common approach to detect if emulator is used  
@@ -46,6 +51,13 @@ export function maybeUseEmulator(firebase: FirebaseApp, options: FirebaseEmulato
       const authHost = options.authHost ?? EMULATOR_AUTHENTICATION_HOST_DEFAULT;
       console.log(`Authentication Emulator ${authHost}`);
       firebase.auth().useEmulator(authHost);
+    }
+
+    if (options.functionsHost !== false) {
+      const functionsHost = options.functionsHost ?? EMULATOR_FUNCTIONS_HOST_DEFAULT;
+      const functionsPort = options.functionsPort ?? EMULATOR_FUNCTIONS_PORT_DEFAULT;
+      console.log(`Functions Emulator ${functionsHost}:${functionsPort}`);
+      firebase.functions().useEmulator(functionsHost, functionsPort);
     }
   }
 }
