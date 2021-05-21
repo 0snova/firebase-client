@@ -89,6 +89,10 @@ Emulators will be used If `options.emulator.shouldUseEmulator` return `true`.
 
 ### Release
 
+1. Bump version in `package.json`
+
+2. Run
+
 ```sh
 yarn release
 ```
