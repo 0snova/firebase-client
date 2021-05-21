@@ -9,12 +9,19 @@ export type FirebaseEmulatorOptions = {
   /* false - do not use Functions Emulator even if shouldUseEmulator() is true */
   functionsHost?: string | false;
   functionsPort?: number;
+
+  storageHost?: string | false;
+  storagePort?: number;
 };
 
 const EMULATOR_FIRESTORE_HOST_DEFAULT = 'localhost:8080';
 const EMULATOR_AUTHENTICATION_HOST_DEFAULT = 'http://localhost:9099';
+
 const EMULATOR_FUNCTIONS_HOST_DEFAULT = 'localhost';
 const EMULATOR_FUNCTIONS_PORT_DEFAULT = 5001;
+
+const EMULATOR_STORAGE_HOST_DEFAULT = 'localhost';
+const EMULATOR_STORAGE_PORT_DEFAULT = 9199;
 
 export const shouldUseEmulatorWhenLocalhost = (): boolean => {
   /* TODO: Determine a more robust and common approach to detect if emulator is used  
@@ -58,6 +65,13 @@ export function maybeUseEmulator(firebase: FirebaseApp, options: FirebaseEmulato
       const functionsPort = options.functionsPort ?? EMULATOR_FUNCTIONS_PORT_DEFAULT;
       console.log(`Functions Emulator ${functionsHost}:${functionsPort}`);
       firebase.functions().useEmulator(functionsHost, functionsPort);
+    }
+
+    if (options.storageHost !== false) {
+      const storageHost = options.storageHost ?? EMULATOR_STORAGE_HOST_DEFAULT;
+      const storagePort = options.storagePort ?? EMULATOR_STORAGE_PORT_DEFAULT;
+      console.log(`Storage Emulator ${storageHost}:${storagePort}`);
+      firebase.storage().useEmulator(storageHost, storagePort);
     }
   }
 }
