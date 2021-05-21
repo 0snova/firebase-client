@@ -84,3 +84,11 @@ function shouldUseEmulatorIfEnv() {
 Emulators will be used If `options.emulator.shouldUseEmulator` return `true`.
 
 `options.emulator.firestoreHost` and `options.emualator.authHost` can accept `false` value, which means that corresponding emulator will not be used even if `shouldUseEmulator` returned `true`.
+
+## Development
+
+### Release
+
+```sh
+yarn release
+```
