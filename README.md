@@ -45,6 +45,8 @@ startFirebase(config, {
     analytics: true,
     auth: true,
     firestore: true,
+    storage: true,
+    funtions: true,
   },
 }).then((app) => {
   // firebase is available and ready to use.

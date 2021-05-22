@@ -6,7 +6,7 @@ export async function loadFirebase(
   {
     emulator = {},
     name = 'default',
-    use: { analytics = true, auth = true, firestore = true, functions = true } = {},
+    use: { analytics = true, auth = true, firestore = true, functions = true, storage = true } = {},
   }: FirebaseAppOptions
 ): Promise<FirebaseApp> {
   const { startFirebase } = await import('./firebase-app');
@@ -25,6 +25,9 @@ export async function loadFirebase(
   if (functions) {
     modulesPromises.push(import('firebase/functions'));
   }
+  if (storage) {
+    modulesPromises.push(import('firebase/storage'));
+  }
 
   await Promise.all(modulesPromises);
 
@@ -35,6 +38,7 @@ export async function loadFirebase(
       analytics,
       auth,
       firestore,
+      storage,
     },
   });
 }

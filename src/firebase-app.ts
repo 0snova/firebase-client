@@ -11,6 +11,7 @@ export interface FirebaseAppOptions {
     firestore?: boolean;
     auth?: boolean;
     functions?: boolean;
+    storage?: boolean;
   };
   emulator?: FirebaseEmulatorOptions;
 }
