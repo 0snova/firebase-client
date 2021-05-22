@@ -12,6 +12,7 @@ const external = [
   'firebase/auth',
   'firebase/analytics',
   'firebase/functions',
+  'firebase/storage',
 ];
 
 export default [
