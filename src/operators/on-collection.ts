@@ -1,4 +1,4 @@
-import { FirebaseApp, firebase } from '../firebase-app';
+import { FirebaseModule, firebase } from '../firebase-app';
 
 export type OnDocumentChange<T> = (
   data: T,
@@ -16,11 +16,11 @@ export type OnCollectionOptions<T> = {
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export function onCollection<T>(
-  firebase: FirebaseApp,
+  firebase: FirebaseModule,
   collection: string,
   { onModifiedDoc, onNewDoc, onRemovedDoc, removeAfterProcessed: autoRemove }: OnCollectionOptions<T>
 ) {
-  return firebase
+  return firebase.app
     .firestore()
     .collection(collection)
     .onSnapshot((snap) => {
@@ -41,7 +41,7 @@ export function onCollection<T>(
         }
 
         if (change.type !== 'removed' && autoRemove) {
-          firebase.firestore().doc(`${collection}/${docId}`).delete();
+          firebase.app.firestore().doc(`${collection}/${docId}`).delete();
         }
       });
     });

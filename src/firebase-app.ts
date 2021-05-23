@@ -18,13 +18,13 @@ export interface FirebaseAppOptions {
 
 export type FirebaseAppOptionsWithDefaultValues = Required<FirebaseAppOptions>;
 
-export type FirebaseApp = firebase.app.App;
 export type Firebase = typeof firebase;
+export type FirebaseModule = { app: firebase.app.App; firebase: Firebase };
 
 export function startFirebase(
   config: FirebaseConfig,
   { name, use: { analytics }, emulator }: FirebaseAppOptionsWithDefaultValues
-): FirebaseApp {
+): FirebaseModule {
   // Check if app with provided name already exists. It is usefull for development environments with HMR
   // to avoid Firebase errors about already initialized app.
   const isAppInitialized = firebase.apps.length ? firebase.apps.find((app) => app.name === name) : undefined;
@@ -41,5 +41,5 @@ export function startFirebase(
     maybeUseEmulator(app, emulator);
   }
 
-  return app;
+  return { app, firebase };
 }

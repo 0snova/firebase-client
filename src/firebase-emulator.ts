@@ -1,4 +1,4 @@
-import { FirebaseApp } from './firebase-app';
+import { FirebaseModule } from './firebase-app';
 
 export type FirebaseEmulatorOptions = {
   shouldUseEmulator?(): boolean;
@@ -39,7 +39,7 @@ export const shouldUseEmulatorWhenLocalhost = (): boolean => {
 
 const shouldNeverUseEmulator = () => false;
 
-export function maybeUseEmulator(firebase: FirebaseApp, options: FirebaseEmulatorOptions): void {
+export function maybeUseEmulator(firebaseApp: FirebaseModule['app'], options: FirebaseEmulatorOptions): void {
   const shouldUseEmulator = options.shouldUseEmulator ?? shouldNeverUseEmulator;
 
   if (shouldUseEmulator()) {
@@ -48,7 +48,7 @@ export function maybeUseEmulator(firebase: FirebaseApp, options: FirebaseEmulato
     if (options.firestoreHost !== false) {
       const firestoreHost = options.firestoreHost ?? EMULATOR_FIRESTORE_HOST_DEFAULT;
       console.log(`Firestore Emulator ${firestoreHost}`);
-      firebase.firestore().settings({
+      firebaseApp.firestore().settings({
         host: firestoreHost,
         ssl: false,
       });
@@ -57,21 +57,21 @@ export function maybeUseEmulator(firebase: FirebaseApp, options: FirebaseEmulato
     if (options.authHost !== false) {
       const authHost = options.authHost ?? EMULATOR_AUTHENTICATION_HOST_DEFAULT;
       console.log(`Authentication Emulator ${authHost}`);
-      firebase.auth().useEmulator(authHost);
+      firebaseApp.auth().useEmulator(authHost);
     }
 
     if (options.functionsHost !== false) {
       const functionsHost = options.functionsHost ?? EMULATOR_FUNCTIONS_HOST_DEFAULT;
       const functionsPort = options.functionsPort ?? EMULATOR_FUNCTIONS_PORT_DEFAULT;
       console.log(`Functions Emulator ${functionsHost}:${functionsPort}`);
-      firebase.functions().useEmulator(functionsHost, functionsPort);
+      firebaseApp.functions().useEmulator(functionsHost, functionsPort);
     }
 
     if (options.storageHost !== false) {
       const storageHost = options.storageHost ?? EMULATOR_STORAGE_HOST_DEFAULT;
       const storagePort = options.storagePort ?? EMULATOR_STORAGE_PORT_DEFAULT;
       console.log(`Storage Emulator ${storageHost}:${storagePort}`);
-      firebase.storage().useEmulator(storageHost, storagePort);
+      firebaseApp.storage().useEmulator(storageHost, storagePort);
     }
   }
 }

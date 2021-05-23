@@ -1,5 +1,5 @@
 import { FirebaseConfig } from './firebase-config';
-import { FirebaseApp, FirebaseAppOptions } from './firebase-app';
+import { FirebaseModule, FirebaseAppOptions } from './firebase-app';
 
 export async function loadFirebase(
   config: FirebaseConfig,
@@ -8,7 +8,7 @@ export async function loadFirebase(
     name = 'default',
     use: { analytics = true, auth = true, firestore = true, functions = true, storage = true } = {},
   }: FirebaseAppOptions
-): Promise<FirebaseApp> {
+): Promise<FirebaseModule> {
   const { startFirebase } = await import('./firebase-app');
 
   const modulesPromises: Promise<unknown>[] = [];
