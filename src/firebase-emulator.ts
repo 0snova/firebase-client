@@ -1,9 +1,15 @@
+import { connectAuthEmulator } from 'firebase/auth';
+import { connectFirestoreEmulator, initializeFirestore } from 'firebase/firestore';
+import { connectFunctionsEmulator } from 'firebase/functions';
+import { connectStorageEmulator } from 'firebase/storage';
+
 import { FirebaseModule } from './firebase-app';
 
 export type FirebaseEmulatorOptions = {
   shouldUseEmulator?(): boolean;
   /* false - do not use Firehost Emulator even if shouldUseEmulator() is true */
   firestoreHost?: string | false;
+  firestorePort?: number;
   /* false - do not use Authentication Emulator even if shouldUseEmulator() is true */
   authHost?: string | false;
   /* false - do not use Functions Emulator even if shouldUseEmulator() is true */
@@ -14,7 +20,9 @@ export type FirebaseEmulatorOptions = {
   storagePort?: number;
 };
 
-const EMULATOR_FIRESTORE_HOST_DEFAULT = 'localhost:8080';
+export const EMULATOR_FIRESTORE_HOST_DEFAULT = 'localhost';
+export const EMULATOR_FIRESTORE_PORT_DEFAULT = 8080;
+
 const EMULATOR_AUTHENTICATION_HOST_DEFAULT = 'http://localhost:9099';
 
 const EMULATOR_FUNCTIONS_HOST_DEFAULT = 'localhost';
@@ -37,41 +45,32 @@ export const shouldUseEmulatorWhenLocalhost = (): boolean => {
   return window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
 };
 
-const shouldNeverUseEmulator = () => false;
+export const shouldNeverUseEmulator = () => false;
 
-export function maybeUseEmulator(firebaseApp: FirebaseModule['app'], options: FirebaseEmulatorOptions): void {
+export function maybeUseEmulator(firebaseModule: FirebaseModule, options: FirebaseEmulatorOptions): void {
   const shouldUseEmulator = options.shouldUseEmulator ?? shouldNeverUseEmulator;
 
   if (shouldUseEmulator()) {
     console.log('Using Firebase Services Emulators.');
 
-    if (options.firestoreHost !== false) {
-      const firestoreHost = options.firestoreHost ?? EMULATOR_FIRESTORE_HOST_DEFAULT;
-      console.log(`Firestore Emulator ${firestoreHost}`);
-      firebaseApp.firestore().settings({
-        host: firestoreHost,
-        ssl: false,
-      });
-    }
-
     if (options.authHost !== false) {
       const authHost = options.authHost ?? EMULATOR_AUTHENTICATION_HOST_DEFAULT;
       console.log(`Authentication Emulator ${authHost}`);
-      firebaseApp.auth().useEmulator(authHost);
+      connectAuthEmulator(firebaseModule.auth, authHost);
     }
 
     if (options.functionsHost !== false) {
       const functionsHost = options.functionsHost ?? EMULATOR_FUNCTIONS_HOST_DEFAULT;
       const functionsPort = options.functionsPort ?? EMULATOR_FUNCTIONS_PORT_DEFAULT;
       console.log(`Functions Emulator ${functionsHost}:${functionsPort}`);
-      firebaseApp.functions().useEmulator(functionsHost, functionsPort);
+      connectFunctionsEmulator(firebaseModule.functions, functionsHost, functionsPort);
     }
 
     if (options.storageHost !== false) {
       const storageHost = options.storageHost ?? EMULATOR_STORAGE_HOST_DEFAULT;
       const storagePort = options.storagePort ?? EMULATOR_STORAGE_PORT_DEFAULT;
       console.log(`Storage Emulator ${storageHost}:${storagePort}`);
-      firebaseApp.storage().useEmulator(storageHost, storagePort);
+      connectStorageEmulator(firebaseModule.storage, storageHost, storagePort);
     }
   }
 }

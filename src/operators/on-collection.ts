@@ -1,10 +1,11 @@
-import { FirebaseModule, firebase } from '../firebase-app';
+import { DocumentSnapshot, DocumentChangeType, onSnapshot, collection, doc, deleteDoc } from 'firebase/firestore';
+import { FirebaseModule } from '../firebase-app';
 
 export type OnDocumentChange<T> = (
   data: T,
   id: string,
-  snapshot: firebase.firestore.DocumentSnapshot,
-  changeType: firebase.firestore.DocumentChangeType
+  snapshot: DocumentSnapshot,
+  changeType: DocumentChangeType
 ) => void;
 
 export type OnCollectionOptions<T> = {
@@ -17,32 +18,29 @@ export type OnCollectionOptions<T> = {
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export function onCollection<T>(
   firebase: FirebaseModule,
-  collection: string,
+  collectionName: string,
   { onModifiedDoc, onNewDoc, onRemovedDoc, removeAfterProcessed: autoRemove }: OnCollectionOptions<T>
 ) {
-  return firebase.app
-    .firestore()
-    .collection(collection)
-    .onSnapshot((snap) => {
-      snap.docChanges().forEach((change) => {
-        const docId = change.doc.id;
-        const data = change.doc.data();
+  return onSnapshot(collection(firebase.firestore, collectionName), (snap) => {
+    snap.docChanges().forEach((change) => {
+      const docId = change.doc.id;
+      const data = change.doc.data();
 
-        switch (change.type) {
-          case 'added':
-            onNewDoc?.(data as T, docId, change.doc, change.type);
-            break;
-          case 'modified':
-            onModifiedDoc?.(data as T, docId, change.doc, change.type);
-            break;
-          case 'removed':
-            onRemovedDoc?.(data as T, docId, change.doc, change.type);
-            break;
-        }
+      switch (change.type) {
+        case 'added':
+          onNewDoc?.(data as T, docId, change.doc, change.type);
+          break;
+        case 'modified':
+          onModifiedDoc?.(data as T, docId, change.doc, change.type);
+          break;
+        case 'removed':
+          onRemovedDoc?.(data as T, docId, change.doc, change.type);
+          break;
+      }
 
-        if (change.type !== 'removed' && autoRemove) {
-          firebase.app.firestore().doc(`${collection}/${docId}`).delete();
-        }
-      });
+      if (change.type !== 'removed' && autoRemove) {
+        deleteDoc(doc(firebase.firestore, `${collection}/${docId}`));
+      }
     });
+  });
 }
